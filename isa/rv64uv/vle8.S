@@ -1,0 +1,51 @@
+# See LICENSE for license details.
+
+#*****************************************************************************
+# lb.S
+#-----------------------------------------------------------------------------
+#
+# Test lb instruction in a vf block.
+#
+
+#include "riscv_test.h"
+#include "test_macros.h"
+
+RVTEST_RV64U
+RVTEST_CODE_BEGIN
+
+# vsetvli a2,zero,0
+  la a5,src
+  la a6,dest
+  
+  vle8.v v1,0(a5)
+  vse8.v v1,0(a6)
+
+  li a4,16
+  li a2,0
+loop:
+  lb a0,0(a6)
+  lb a1,0(a5)
+  addi TESTNUM,a2,2
+  bne a0,a1,fail
+  addi a6,a6,1
+  addi a5,a5,1
+  addi a2,a2,1
+  bne a2,a4,loop
+  j pass
+
+  TEST_PASSFAIL
+
+RVTEST_CODE_END
+
+  .data
+RVTEST_DATA_BEGIN
+
+  TEST_DATA
+
+src:
+#include "data_w.h"
+
+dest:
+  .skip 16384
+
+RVTEST_DATA_END
