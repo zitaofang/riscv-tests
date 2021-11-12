@@ -10,17 +10,20 @@
 #include "riscv_test.h"
 #include "test_macros.h"
 
-RVTEST_RV64U
+RVTEST_RV64UV
 RVTEST_CODE_BEGIN
 
 # vsetvli a2,zero,0
   la a5,src
   la a6,dest
   
+  li a4, 128
+  vsetvli a4,a4,e8,m1
+  csrwi vstart,0
+
   vle8.v v1,0(a5)
   vse8.v v1,0(a6)
 
-  li a4,16
   li a2,0
 loop:
   lb a0,0(a6)
